@@ -133,3 +133,7 @@ describe('DELETE /todos/:id', () => {
             .end(done);
    });
 });
+
+describe('UPDATE /todos/:id', () => {
+
+});
