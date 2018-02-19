@@ -10,7 +10,9 @@ const todos = [{
     text: 'First test todo'
 },{
     _id: new ObjectID(),
-    text: 'Second test todo'
+    text: 'Second test todo',
+    completed: true,
+    completeAt: 123
 }];
 
 beforeEach((done) => {
@@ -134,6 +136,38 @@ describe('DELETE /todos/:id', () => {
    });
 });
 
-describe('UPDATE /todos/:id', () => {
+describe('PATCH /todos/:id', () => {
+    it('should update a todo', (done) => {
+        var text = 'some text';
+        request(app)
+            .patch(`/todos/${todos[0]._id.toHexString()}`, )
+            .send({
+                text: text,
+                completed: true
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.text).toBe(text);
+                expect(res.body.todo.completed).toBeTruthy();
+                expect(res.body.todo.completedAt).toBe(new Date(res.body.todo.completedAt).getTime());
+            })
+            .end(done);
+    });
 
+    it('should clear completedAt when todo is not completed', (done) => {
+        var text = 'Something different.';
+        request(app)
+            .patch(`/todos/${todos[1]._id.toHexString()}`)
+            .send({
+                text: text,
+                completed: false
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.text).toBe(text);
+                expect(res.body.todo.completed).toBeFalsy();
+                expect(res.body.todo.completedAt).toBeNull();
+            })
+            .end(done);
+    });
 });
